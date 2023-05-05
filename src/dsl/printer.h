@@ -14,11 +14,19 @@
 #include <dsl/var.h>
 #include <dsl/builtin.h>
 #include <dsl/operators.h>
+#include <dsl/sugar.h>
 
 namespace luisa::compute {
 
 class Device;
 class Stream;
+
+[[nodiscard]] inline auto make_dispatch_id_uint3(uint dispatch_id) noexcept { return make_uint3(dispatch_id, 0u, 0u); }
+[[nodiscard]] inline auto make_dispatch_id_uint3(uint2 dispatch_id) noexcept { return make_uint3(dispatch_id, 0u); }
+[[nodiscard]] inline auto make_dispatch_id_uint3(uint3 dispatch_id) noexcept { return dispatch_id; }
+[[nodiscard]] inline auto make_dispatch_id_uint3(Expr<uint> dispatch_id) noexcept { return make_uint3(dispatch_id, 0u, 0u); }
+[[nodiscard]] inline auto make_dispatch_id_uint3(Expr<uint2> dispatch_id) noexcept { return make_uint3(dispatch_id, 0u); }
+[[nodiscard]] inline auto make_dispatch_id_uint3(Expr<uint3> dispatch_id) noexcept { return dispatch_id; }
 
 /// Printer in kernel
 class LC_DSL_API Printer {
@@ -37,6 +45,9 @@ private:
     luisa::vector<Item> _items;
     spdlog::logger _logger;
     bool _reset_called{false};
+
+    uint3 _dispatch_id{0u};
+    bool _dispatch_id_set{false};
 
 private:
     void _log_to_buffer(Expr<uint>, uint) noexcept {}
@@ -77,22 +88,44 @@ public:
     /// Log in kernel at debug level.
     template<typename... Args>
     void verbose(luisa::string fmt, Args &&...args) noexcept {
-        _log(spdlog::level::debug, std::move(fmt), std::forward<Args>(args)...);
+        auto log_bool = def(_logger.should_log(spdlog::level::debug));
+        log_bool &= ite(_dispatch_id_set, all(make_dispatch_id_uint3(dispatch_id()) == _dispatch_id), true);
+        $if(all(make_dispatch_id_uint3(dispatch_id()) == _dispatch_id)) {
+            _log(spdlog::level::debug, std::move(fmt), std::forward<Args>(args)...);
+        };
     }
     /// Log in kernel at information level.
     template<typename... Args>
     void info(luisa::string fmt, Args &&...args) noexcept {
-        _log(spdlog::level::info, std::move(fmt), std::forward<Args>(args)...);
+        if (_logger.should_log(spdlog::level::info) || !_dispatch_id_set) {
+            _log(spdlog::level::info, std::move(fmt), std::forward<Args>(args)...);
+        } else {
+            $if(all(make_dispatch_id_uint3(dispatch_id()) == _dispatch_id)) {
+                _log(spdlog::level::info, std::move(fmt), std::forward<Args>(args)...);
+            };
+        }
     }
     /// Log in kernel at warning level.
     template<typename... Args>
     void warning(luisa::string fmt, Args &&...args) noexcept {
-        _log(spdlog::level::warn, std::move(fmt), std::forward<Args>(args)...);
+        if (_logger.should_log(spdlog::level::warn) || !_dispatch_id_set) {
+            _log(spdlog::level::warn, std::move(fmt), std::forward<Args>(args)...);
+        } else {
+            $if(all(make_dispatch_id_uint3(dispatch_id()) == _dispatch_id)) {
+                _log(spdlog::level::warn, std::move(fmt), std::forward<Args>(args)...);
+            };
+        }
     }
     /// Log in kernel at error level.
     template<typename... Args>
     void error(luisa::string fmt, Args &&...args) noexcept {
-        _log(spdlog::level::err, std::move(fmt), std::forward<Args>(args)...);
+        if (_logger.should_log(spdlog::level::err) || !_dispatch_id_set) {
+            _log(spdlog::level::err, std::move(fmt), std::forward<Args>(args)...);
+        } else {
+            $if(all(make_dispatch_id_uint3(dispatch_id()) == _dispatch_id)) {
+                _log(spdlog::level::err, std::move(fmt), std::forward<Args>(args)...);
+            };
+        }
     }
     /// Log in kernel at debug level with dispatch id.
     template<typename... Args>
@@ -122,6 +155,35 @@ public:
         error(std::move(fmt.append(" [dispatch_id = ({}, {}, {})]")),
               std::forward<Args>(args)..., p.x, p.y, p.z);
     }
+
+    /// Set log level to debug.
+    void set_level_verbose() noexcept { _logger.set_level(spdlog::level::debug); }
+    /// Set log level to information.
+    void set_level_info() noexcept { _logger.set_level(spdlog::level::info); }
+    /// Set log level to warning.
+    void set_level_warning() noexcept { _logger.set_level(spdlog::level::warn); }
+    /// Set log level to error.
+    void set_level_error() noexcept { _logger.set_level(spdlog::level::err); }
+
+    /// Set log dispatch_id condition.
+    void set_log_dispatch_id(uint dispatch_id) noexcept {
+        _dispatch_id = make_dispatch_id_uint3(dispatch_id);
+        _dispatch_id_set = true;
+    }
+    /// Set log dispatch_id condition.
+    void set_log_dispatch_id(uint2 dispatch_id) noexcept {
+        _dispatch_id = make_dispatch_id_uint3(dispatch_id);
+        _dispatch_id_set = true;
+    }
+    /// Set log dispatch_id condition.
+    void set_log_dispatch_id(uint3 dispatch_id) noexcept {
+        _dispatch_id = make_dispatch_id_uint3(dispatch_id);
+        _dispatch_id_set = true;
+    }
+    //    /// Set log dispatch_id condition.
+    //    template<typename Tv>
+    //    requires
+    void remove_log_dispatch_id() noexcept { _dispatch_id_set = false; }
 };
 
 template<typename... Args>
