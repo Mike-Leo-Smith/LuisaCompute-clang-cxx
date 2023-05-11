@@ -17,25 +17,27 @@ private:
     const RefExpr *_expression;
     size_t _size;
 
+private:
+    static auto _local_type(size_t n) noexcept {
+        auto elem = Type::of<T>();
+        if (elem->is_scalar() && n > 1u && n <= 4u) {
+            return Type::from(luisa::format(
+                "vector<{},{}>", elem->description(), n));
+        }
+        return Type::from(luisa::format(
+            "array<{},{}>", elem->description(), n));
+    }
+
 public:
     explicit Local(size_t n) noexcept
-        : _expression{detail::FunctionBuilder::current()->local(
-              Type::from(luisa::format(
-                  "array<{},{}>", Type::of<T>()->description(), n)))},
+        : _expression{detail::FunctionBuilder::current()->local(_local_type(n))},
           _size{n} {}
-
-    template<typename U>
-        requires is_array_expr_v<U>
-    Local(U &&array) noexcept
-        : _expression{detail::extract_expression(def(std::forward<U>(array)))},
-          _size{array_expr_dimension_v<U>} {}
 
     Local(Local &&) noexcept = default;
     Local(const Local &another) noexcept
         : _size{another._size} {
         auto fb = detail::FunctionBuilder::current();
-        _expression = fb->local(Type::from(luisa::format(
-            "array<{},{}>", Type::of<T>()->description(), _size)));
+        _expression = fb->local(_local_type(_size));
         fb->assign(_expression, another._expression);
     }
     Local &operator=(const Local &rhs) noexcept {
