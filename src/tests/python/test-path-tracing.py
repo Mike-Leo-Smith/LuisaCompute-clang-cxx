@@ -60,7 +60,7 @@ enable_aces = True
 
 @func
 def raytracing_kernel(image, seed_image, accel, heap, resolution, vertex_buffer, material_buffer, mesh_cnt, frame_index):
-    set_block_size(8, 8, 1)
+    set_block_size(16, 16, 1)
     coord = dispatch_id().xy
     frame_size = float(min(resolution.x, resolution.y))
     if frame_index == 0:

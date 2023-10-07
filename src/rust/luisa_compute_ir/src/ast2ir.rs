@@ -923,7 +923,6 @@ impl<'a: 'b, 'b> AST2IR<'a, 'b> {
             "BACKWARD" => Func::Backward,
             "DETACH" => Func::Detach,
             "RAY_TRACING_INSTANCE_TRANSFORM" => Func::RayTracingInstanceTransform,
-            "RAY_TRACING_INSTANCE_USER_ID" => Func::RayTracingSetInstanceUserId,
             "RAY_TRACING_SET_INSTANCE_TRANSFORM" => Func::RayTracingSetInstanceTransform,
             "RAY_TRACING_SET_INSTANCE_VISIBILITY" => Func::RayTracingSetInstanceVisibility,
             "RAY_TRACING_SET_INSTANCE_OPACITY" => Func::RayTracingSetInstanceOpacity,
@@ -1485,7 +1484,6 @@ impl<'a: 'b, 'b> AST2IR<'a, 'b> {
                 assert_eq!(t.dimension(), 4);
                 args
             }
-            "RAY_TRACING_INSTANCE_USER_ID" => {
                 let args = convert_args(&[false, false]);
                 check_is_accel(args[0]);
                 check_is_index(args[1].type_());

@@ -447,11 +447,6 @@ impl AccelImpl {
         affine
     }
     #[inline]
-    pub unsafe fn instance_user_id(&self, id: u32) -> u32 {
-        let geometry = sys::rtcGetGeometry(self.handle, id);
-        sys::rtcGetGeometryUserData(geometry) as u64 as u32
-    }
-    #[inline]
     pub unsafe fn set_instance_transform(&self, id: u32, affine: [f32; 12]) {
         let mut instance = self.instances[id as usize].write();
         assert!(instance.valid());

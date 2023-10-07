@@ -18,6 +18,7 @@ pl.v0=q.CommittedInstanceIndex();
 pl.v1=q.CommittedPrimitiveIndex();
 pl.v2=q.CommittedTriangleBarycentrics();
 pl.v3=q.CommittedRayT();
+pl.v4=q.CommittedInstanceID();
 }else{
 pl.v0=4294967295;
 }
@@ -70,6 +71,7 @@ pl.v1=q.CommittedPrimitiveIndex();
 pl.v2=q.CommittedTriangleBarycentrics();
 pl.v3=1;
 pl.v4=q.CommittedRayT();
+pl.v5=q.CommittedInstanceID();
 break;
 case COMMITTED_PROCEDURAL_PRIMITIVE_HIT:
 pl.v0=q.CommittedInstanceIndex();
@@ -77,6 +79,7 @@ pl.v1=q.CommittedPrimitiveIndex();
 pl.v2=0;
 pl.v3=2;
 pl.v4=q.CommittedRayT();
+pl.v5=q.CommittedInstanceID();
 break;
 default:
 pl.v3=0;
@@ -91,6 +94,7 @@ pl.v0=q.CandidateInstanceIndex();
 pl.v1=q.CandidatePrimitiveIndex();
 pl.v2=q.CandidateTriangleBarycentrics();
 pl.v3=q.CandidateTriangleRayT();
+pl.v4=q.CandidateInstanceID();
 return pl;
 }
 template<typename Q>
@@ -98,6 +102,7 @@ _Hit2 _GetProceduralCandidateHit(Q q){
 _Hit2 pl;
 pl.v0=q.CandidateInstanceIndex();
 pl.v1=q.CandidatePrimitiveIndex();
+pl.v2=q.CandidateInstanceID();
 return pl;
 }
 template<typename Q>

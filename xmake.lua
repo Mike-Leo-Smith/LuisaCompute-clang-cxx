@@ -106,6 +106,7 @@ option("bin_dir")
 set_default("bin")
 set_showmenu(true)
 option_end()
+
 -- pre-defined options end
 
 -- try options.lua

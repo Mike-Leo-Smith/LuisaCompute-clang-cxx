@@ -3,9 +3,9 @@ from .func import func
 from .types import uint
 from .mathtypes import *
 
-CommittedHit = StructType(inst=uint, prim=uint, bary=float2, hit_type=uint, ray_t=float)
-TriangleHit = StructType(inst=uint, prim=uint, bary=float2, ray_t=float)
-ProceduralHit = StructType(inst=uint, prim=uint)
+CommittedHit = StructType(inst=uint, prim=uint, bary=float2, hit_type=uint, ray_t=float, user_id=uint)
+TriangleHit = StructType(inst=uint, prim=uint, bary=float2, ray_t=float, user_id=uint)
+ProceduralHit = StructType(inst=uint, prim=uint, user_id=uint)
 
 
 @func

@@ -776,7 +776,6 @@ ir::NodeRef AST2IR::_convert(const CallExpr *expr) noexcept {
             case CallOp::ACCUMULATE_GRADIENT: return ir::Func::Tag::AccGrad;
             case CallOp::DETACH: return ir::Func::Tag::Detach;
             case CallOp::RAY_TRACING_INSTANCE_TRANSFORM: return ir::Func::Tag::RayTracingInstanceTransform;
-            case CallOp::RAY_TRACING_INSTANCE_USER_ID: return ir::Func::Tag::RayTracingInstanceUserId;
             case CallOp::RAY_TRACING_SET_INSTANCE_TRANSFORM: return ir::Func::Tag::RayTracingSetInstanceTransform;
             case CallOp::RAY_TRACING_SET_INSTANCE_VISIBILITY: return ir::Func::Tag::RayTracingSetInstanceVisibility;
             case CallOp::RAY_TRACING_SET_INSTANCE_OPACITY: return ir::Func::Tag::RayTracingSetInstanceOpacity;

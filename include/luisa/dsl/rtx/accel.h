@@ -23,8 +23,6 @@ public:
     [[nodiscard]] RayQueryAny query_any(Expr<Ray> ray, Expr<uint> vis_mask = 0xffu) const noexcept;
     [[nodiscard]] Var<float4x4> instance_transform(Expr<uint> instance_id) const noexcept;
     [[nodiscard]] Var<float4x4> instance_transform(Expr<int> instance_id) const noexcept;
-    [[nodiscard]] Var<uint> instance_user_id(Expr<uint> instance_id) const noexcept;
-    [[nodiscard]] Var<uint> instance_user_id(Expr<int> instance_id) const noexcept;
     [[nodiscard]] Var<uint> instance_visibility_mask(Expr<uint> instance_id) const noexcept;
     [[nodiscard]] Var<uint> instance_visibility_mask(Expr<int> instance_id) const noexcept;
     void set_instance_transform(Expr<int> instance_id, Expr<float4x4> mat) const noexcept;
@@ -69,8 +67,6 @@ public:
     [[nodiscard]] RayQueryAny query_any(Expr<Ray> ray, Expr<uint> vis_mask = 0xffu) const noexcept;
     [[nodiscard]] Var<float4x4> instance_transform(Expr<int> instance_id) const noexcept;
     [[nodiscard]] Var<float4x4> instance_transform(Expr<uint> instance_id) const noexcept;
-    [[nodiscard]] Var<uint> instance_user_id(Expr<int> instance_id) const noexcept;
-    [[nodiscard]] Var<uint> instance_user_id(Expr<uint> instance_id) const noexcept;
     [[nodiscard]] Var<uint> instance_visibility_mask(Expr<uint> instance_id) const noexcept;
     [[nodiscard]] Var<uint> instance_visibility_mask(Expr<int> instance_id) const noexcept;
     void set_instance_transform(Expr<int> instance_id, Expr<float4x4> mat) const noexcept;

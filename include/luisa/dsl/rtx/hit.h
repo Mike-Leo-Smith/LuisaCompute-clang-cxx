@@ -12,7 +12,7 @@ namespace luisa::compute {
 [[nodiscard]] LC_DSL_API Var<float4> interpolate(Expr<float2> bary, Expr<float4> a, Expr<float4> b, Expr<float4> c) noexcept;
 }// namespace luisa::compute
 
-LUISA_STRUCT(luisa::compute::CommittedHit, inst, prim, bary, hit_type, committed_ray_t) {
+LUISA_STRUCT(luisa::compute::CommittedHit, inst, prim, bary, hit_type, committed_ray_t, user_id) {
     [[nodiscard]] auto miss() const noexcept {
         return hit_type == static_cast<uint32_t>(luisa::compute::HitType::Miss);
     }
@@ -28,7 +28,7 @@ LUISA_STRUCT(luisa::compute::CommittedHit, inst, prim, bary, hit_type, committed
     }
 };
 
-LUISA_STRUCT(luisa::compute::TriangleHit, inst, prim, bary, committed_ray_t) {
+LUISA_STRUCT(luisa::compute::TriangleHit, inst, prim, bary, committed_ray_t, user_id) {
     [[nodiscard]] auto miss() const noexcept {
         return inst == std::numeric_limits<uint32_t>::max();
     }
@@ -38,4 +38,4 @@ LUISA_STRUCT(luisa::compute::TriangleHit, inst, prim, bary, committed_ray_t) {
     }
 };
 
-LUISA_STRUCT(luisa::compute::ProceduralHit, inst, prim) {};
+LUISA_STRUCT(luisa::compute::ProceduralHit, inst, prim, user_id) {};
